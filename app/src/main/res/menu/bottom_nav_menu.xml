@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_daily_goals"
+        android:icon="@drawable/ic_goal"
+        android:title="@string/nav_daily_goals" />
+    <item
+        android:id="@+id/navigation_schedule"
+        android:icon="@drawable/ic_schedule"
+        android:title="@string/nav_schedule" />
+    <item
+        android:id="@+id/navigation_todo"
+        android:icon="@drawable/ic_todo"
+        android:title="@string/nav_todo" />
+    <item
+        android:id="@+id/navigation_cigarettes"
+        android:icon="@drawable/ic_cigarette"
+        android:title="@string/nav_cigarettes" />
+    <item
+        android:id="@+id/navigation_points"
+        android:icon="@drawable/ic_trophy"
+        android:title="@string/nav_points" />
+</menu>

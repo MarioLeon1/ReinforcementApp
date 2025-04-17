@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Reinforcement</string>
+
+    <!-- Navigation items -->
+    <string name="nav_daily_goals">Obj</string>
+    <string name="nav_schedule">Hor</string>
+    <string name="nav_todo">To-Do</string>
+    <string name="nav_cigarettes">Cig</string>
+    <string name="nav_points">Prem</string>
+
+    <!-- Daily Goals Section -->
+    <string name="daily_goals_title">Objetivos diarios:</string>
+    <string name="physical_goal">Objetivo físico:</string>
+    <string name="physical_goal_run">Salir a correr</string>
+    <string name="physical_goal_gym">Ir al gimnasio</string>
+    <string name="mental_goal">Objetivo mental:</string>
+    <string name="mental_goal_read">Leer</string>
+    <string name="mental_goal_write">Escribir</string>
+    <string name="mental_goal_learn">Aprender algo nuevo</string>
+    <string name="discipline_goal">Disciplina:</string>
+    <string name="discipline_goal_class">Ir a clase</string>
+    <string name="discipline_goal_study">Estudiar</string>
+    <string name="discipline_goal_company">Empresa</string>
+
+    <!-- Motivational phrases -->
+    <string-array name="motivational_phrases">
+        <item>El éxito es la suma de pequeños esfuerzos repetidos día tras día.</item>
+        <item>No cuentes los días, haz que los días cuenten.</item>
+        <item>Lo que haces hoy puede mejorar todos tus mañanas.</item>
+        <item>Pequeños cambios eventualmente suman grandes resultados.</item>
+        <item>La autodisciplina es el factor más importante del éxito.</item>
+    </string-array>
+</resources>

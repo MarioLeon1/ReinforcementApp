@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_daily_goals">
+
+    <fragment
+        android:id="@+id/navigation_daily_goals"
+        android:name="com.example.reinforcement.ui.goals.DailyGoalsFragment"
+        android:label="@string/nav_daily_goals"
+        tools:layout="@layout/fragment_daily_goals" />
+
+    <fragment
+        android:id="@+id/navigation_schedule"
+        android:name="com.example.reinforcement.ui.schedule.ScheduleFragment"
+        android:label="@string/nav_schedule"
+        tools:layout="@layout/fragment_schedule" />
+
+    <fragment
+        android:id="@+id/navigation_todo"
+        android:name="com.example.reinforcement.ui.todo.TodoFragment"
+        android:label="@string/nav_todo"
+        tools:layout="@layout/fragment_todo" />
+
+    <fragment
+        android:id="@+id/navigation_cigarettes"
+        android:name="com.example.reinforcement.ui.cigarettes.CigarettesFragment"
+        android:label="@string/nav_cigarettes"
+        tools:layout="@layout/fragment_cigarettes" />
+
+    <fragment
+        android:id="@+id/navigation_points"
+        android:name="com.example.reinforcement.ui.points.PointsFragment"
+        android:label="@string/nav_points"
+        tools:layout="@layout/fragment_points" />
+</navigation>
