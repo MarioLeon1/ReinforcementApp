@@ -30,4 +30,17 @@
         <item>Pequeños cambios eventualmente suman grandes resultados.</item>
         <item>La autodisciplina es el factor más importante del éxito.</item>
     </string-array>
+
+    <!-- Schedule Section -->
+    <string name="schedule_title">Horario:</string>
+    <string name="yesterday">Ayer</string>
+    <string name="today">Hoy</string>
+    <string name="tomorrow">Mañana</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
 </resources>
