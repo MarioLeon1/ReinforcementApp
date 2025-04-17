@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -16,14 +17,81 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_coming_soon"
+        android:id="@+id/text_motivational_phrase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Sección de To-Do List en construcción"
+        android:layout_marginTop="8dp"
         android:textAlignment="center"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@id/text_app_name"
+        tools:text="Frase motivacional del día" />
+
+    <LinearLayout
+        android:id="@+id/layout_date_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/text_motivational_phrase">
+
+        <TextView
+            android:id="@+id/text_previous_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            tools:text="Ayer\n22 de abril" />
+
+        <TextView
+            android:id="@+id/text_current_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Hoy\n23 de abril" />
+
+        <TextView
+            android:id="@+id/text_next_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            tools:text="Mañana\n24 de abril" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_todo_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/todo_title"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/layout_date_navigation" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_todo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/button_add_task"
+        app:layout_constraintTop_toBottomOf="@id/text_todo_title"
+        tools:listitem="@layout/item_todo_task" />
+
+    <Button
+        android:id="@+id/button_add_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_task"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

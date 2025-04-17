@@ -1,4 +1,6 @@
 package com.example.reinforcement
+// Añade esta importación al principio del archivo MainActivity.kt:
+import com.example.reinforcement.ui.points.PointsFragment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -36,5 +38,16 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Escuchar cambios en el destino de navegación para actualizar datos
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            // Si navegamos a la sección de puntos, forzar la recarga
+            if (destination.id == R.id.navigation_points) {
+                val pointsFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+                    ?.childFragmentManager?.fragments?.firstOrNull { it is PointsFragment } as? PointsFragment
+
+                pointsFragment?.refreshData()
+            }
+        }
     }
 }

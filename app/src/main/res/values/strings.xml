@@ -43,4 +43,29 @@
     <string name="friday">Viernes</string>
     <string name="saturday">Sábado</string>
     <string name="sunday">Domingo</string>
+
+    <!-- Todo Section -->
+    <string name="todo_title">To-Do List:</string>
+    <string name="add_task">Añadir tarea</string>
+    <string name="task_title">Título de la tarea</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="previous_day">Día anterior</string>
+    <string name="next_day">Día siguiente</string>
+
+    <!-- Cigarettes Section -->
+    <string name="cigarettes_today">cigarros hoy</string>
+    <string name="cigarettes_remaining">Puedes fumar %d más</string>
+    <string name="cigarettes_limit_reached">Intenta no fumar más</string>
+    <string name="add_cigarette">+1</string>
+
+    <!-- Points System Section -->
+    <string name="points_title">Sistema de Puntos:</string>
+    <string name="points_total">%d Puntos</string>
+    <string name="category_daily_goals">Objetivos Diarios</string>
+    <string name="category_schedule">Horario</string>
+    <string name="category_todo">To-Do</string>
+    <string name="category_cigarettes">Cigarros</string>
+    <string name="category_bonus">Bonus</string>
+
 </resources>
