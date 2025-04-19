@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 class CigarettesViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val cigarettesRepository = CigarettesRepository()
+    private val cigarettesRepository = CigarettesRepository(application)
     private val phraseRepository = MotivationalPhraseRepository(application)
     
     private val _selectedDate = MutableLiveData<LocalDate>()

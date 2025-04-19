@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.reinforcement.R
 import com.example.reinforcement.databinding.FragmentCigarettesBinding
+import com.example.reinforcement.ui.ViewModelFactory
 
 class CigarettesFragment : Fragment() {
 
@@ -29,7 +30,9 @@ class CigarettesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[CigarettesViewModel::class.java]
+        // Utilizar la fábrica de ViewModels personalizada
+        val factory = ViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[CigarettesViewModel::class.java]
         
         setupAddButton()
         observeViewModel()

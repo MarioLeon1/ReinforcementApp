@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reinforcement.databinding.FragmentScheduleBinding
+import com.example.reinforcement.ui.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -32,7 +33,9 @@ class ScheduleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[ScheduleViewModel::class.java]
+        // Utilizar la fábrica de ViewModels personalizada
+        val factory = ViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[ScheduleViewModel::class.java]
         
         setupTabLayout()
         setupRecyclerView()
@@ -90,8 +93,6 @@ class ScheduleFragment : Fragment() {
             val scheduleItems = generateScheduleItems(tasks)
             adapter.submitList(scheduleItems, viewModel.currentTimeIndicator.value)
         }
-
-// Continuación de la clase ScheduleFragment.kt
         
         // Observar cambios en el indicador de tiempo actual
         viewModel.currentTimeIndicator.observe(viewLifecycleOwner) { currentTime ->

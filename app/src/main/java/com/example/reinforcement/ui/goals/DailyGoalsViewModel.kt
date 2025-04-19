@@ -11,7 +11,7 @@ import com.example.reinforcement.data.repository.MotivationalPhraseRepository
 
 class DailyGoalsViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val goalsRepository = DailyGoalsRepository()
+    private val goalsRepository = DailyGoalsRepository(application)
     private val phraseRepository = MotivationalPhraseRepository(application)
     
     private val _physicalGoals = MutableLiveData<List<DailyGoal>>()

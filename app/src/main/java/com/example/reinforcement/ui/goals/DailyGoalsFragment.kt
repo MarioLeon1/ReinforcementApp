@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reinforcement.databinding.FragmentDailyGoalsBinding
+import com.example.reinforcement.ui.ViewModelFactory
 
 class DailyGoalsFragment : Fragment() {
 
@@ -31,7 +32,9 @@ class DailyGoalsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        viewModel = ViewModelProvider(this)[DailyGoalsViewModel::class.java]
+        // Utilizar la fábrica de ViewModels personalizada
+        val factory = ViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[DailyGoalsViewModel::class.java]
         
         setupRecyclerViews()
         observeViewModel()

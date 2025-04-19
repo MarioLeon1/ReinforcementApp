@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reinforcement.R
 import com.example.reinforcement.databinding.DialogAddTodoBinding
 import com.example.reinforcement.databinding.FragmentTodoBinding
+import com.example.reinforcement.ui.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -35,7 +36,9 @@ class TodoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[TodoViewModel::class.java]
+        // Utilizar la fábrica de ViewModels personalizada
+        val factory = ViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[TodoViewModel::class.java]
         
         setupRecyclerView()
         setupDateNavigation()

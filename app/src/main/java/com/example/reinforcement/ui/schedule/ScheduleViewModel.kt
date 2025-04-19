@@ -20,7 +20,7 @@ import java.util.TimerTask
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val scheduleRepository = ScheduleRepository()
+    private val scheduleRepository = ScheduleRepository(application)
     private val phraseRepository = MotivationalPhraseRepository(application)
     
     private val _selectedDay = MutableLiveData<DayOfWeek>()

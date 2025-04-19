@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 class TodoViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val todoRepository = TodoRepository()
+    private val todoRepository = TodoRepository(application)
     private val phraseRepository = MotivationalPhraseRepository(application)
     
     private val _selectedDate = MutableLiveData<LocalDate>()

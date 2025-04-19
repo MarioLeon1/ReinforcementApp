@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reinforcement.R
 import com.example.reinforcement.data.model.PointCategory
 import com.example.reinforcement.databinding.FragmentPointsBinding
+import com.example.reinforcement.ui.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -40,7 +41,9 @@ class PointsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[PointsViewModel::class.java]
+        // Utilizar el ViewModelFactory personalizado
+        val factory = ViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[PointsViewModel::class.java]
         
         setupRecyclerViews()
         setupDateNavigation()

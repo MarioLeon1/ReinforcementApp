@@ -1,11 +1,14 @@
 package com.example.reinforcement.data.repository
 
+import android.content.Context
 import com.example.reinforcement.data.model.ScheduleTask
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
-class ScheduleRepository {
+class ScheduleRepository(context: Context) {
+    private val preferenceManager = PreferenceManager(context)
+    
     // Ejemplo de tareas del horario (en una aplicación real, estas vendrían de una base de datos)
     private val defaultTasks = listOf(
         // LUNES
@@ -170,9 +173,6 @@ class ScheduleRepository {
         )
     )
     
-    // Mapa para guardar el estado de completado de las tareas por fecha
-    private val completedTasksMap = mutableMapOf<Pair<Int, LocalDate>, Boolean>()
-    
     // Obtener tareas para un día específico
     fun getTasksForDay(dayOfWeek: DayOfWeek): List<ScheduleTask> {
         val today = LocalDate.now()
@@ -181,7 +181,7 @@ class ScheduleRepository {
             .filter { it.dayOfWeek == dayOfWeek }
             .map { task ->
                 val taskDate = today.with(dayOfWeek)
-                val isCompleted = completedTasksMap[Pair(task.id, taskDate)] ?: false
+                val isCompleted = preferenceManager.getScheduleTaskCompletionState(task.id, taskDate)
                 task.copy(isCompleted = isCompleted)
             }
             .sortedBy { it.startTime }
@@ -189,16 +189,15 @@ class ScheduleRepository {
     
     // Cambiar el estado de completado de una tarea
     fun toggleTaskCompletion(taskId: Int, date: LocalDate): Boolean {
-        val key = Pair(taskId, date)
-        val currentStatus = completedTasksMap[key] ?: false
+        val currentStatus = preferenceManager.getScheduleTaskCompletionState(taskId, date)
         val newStatus = !currentStatus
-        completedTasksMap[key] = newStatus
+        preferenceManager.saveScheduleTaskCompletionState(taskId, date, newStatus)
         return newStatus
     }
     
     // Comprobar si una tarea está completada
     fun isTaskCompleted(taskId: Int, date: LocalDate): Boolean {
-        return completedTasksMap[Pair(taskId, date)] ?: false
+        return preferenceManager.getScheduleTaskCompletionState(taskId, date)
     }
     
     // Obtener una tarea por su ID

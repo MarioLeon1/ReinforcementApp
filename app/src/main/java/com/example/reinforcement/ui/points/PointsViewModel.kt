@@ -20,10 +20,10 @@ import java.util.Locale
 class PointsViewModel(application: Application) : AndroidViewModel(application) {
     
     // Repositorios
-    private val dailyGoalsRepository = DailyGoalsRepository()
-    private val scheduleRepository = ScheduleRepository()
-    private val todoRepository = TodoRepository()
-    private val cigarettesRepository = CigarettesRepository()
+    private val dailyGoalsRepository = DailyGoalsRepository(application)
+    private val scheduleRepository = ScheduleRepository(application)
+    private val todoRepository = TodoRepository(application)
+    private val cigarettesRepository = CigarettesRepository(application)
     private val phraseRepository = MotivationalPhraseRepository(application)
     
     private val pointsRepository = PointsRepository(
