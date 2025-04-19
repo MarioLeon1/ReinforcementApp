@@ -2,11 +2,11 @@
     <string name="app_name">Reinforcement</string>
 
     <!-- Navigation items -->
-    <string name="nav_daily_goals">Obj</string>
-    <string name="nav_schedule">Hor</string>
+    <string name="nav_daily_goals">Objetivos</string>
+    <string name="nav_schedule">Horario</string>
     <string name="nav_todo">To-Do</string>
-    <string name="nav_cigarettes">Cig</string>
-    <string name="nav_points">Prem</string>
+    <string name="nav_cigarettes">Cigarros</string>
+    <string name="nav_points">Puntos</string>
 
     <!-- Daily Goals Section -->
     <string name="daily_goals_title">Objetivos diarios:</string>

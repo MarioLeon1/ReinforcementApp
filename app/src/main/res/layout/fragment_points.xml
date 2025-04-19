@@ -10,7 +10,7 @@
         android:id="@+id/text_app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/nav_points"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -62,7 +62,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/points_title"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/layout_date_navigation" />
