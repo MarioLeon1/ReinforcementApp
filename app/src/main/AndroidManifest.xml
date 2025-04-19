@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".ReinforcementApplication"
         android:allowBackup="true"
@@ -13,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reinforcement"
         tools:targetApi="31">
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,6 +26,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Receiver para el reseteo diario -->
+        <receiver 
+            android:name=".data.repository.DailyResetReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.reinforcement.DAILY_RESET" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- Receiver para el reinicio del dispositivo -->
+        <receiver
+            android:name=".data.repository.BootCompletedReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>

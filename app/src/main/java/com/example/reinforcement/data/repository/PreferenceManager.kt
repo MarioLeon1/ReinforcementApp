@@ -28,6 +28,26 @@ class PreferenceManager(context: Context) {
         private const val KEY_CIGARETTE_COUNT_PREFIX = "cigarette_count_"
     }
     
+    // Métodos generales para guardar y obtener fechas
+    fun saveDateValue(key: String, date: LocalDate) {
+        preferences.edit().putString(key, date.format(dateFormatter)).apply()
+    }
+    
+    fun getDateValue(key: String): LocalDate? {
+        val dateString = preferences.getString(key, null)
+        return if (dateString != null) {
+            try {
+                // Remover cualquier comilla doble que pueda existir
+                val cleanDateString = dateString.replace("\"", "")
+                LocalDate.parse(cleanDateString, dateFormatter)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+    
     // ----- MÉTODOS PARA OBJETIVOS DIARIOS -----
     
     fun saveGoalCompletionState(goalId: Int, isCompleted: Boolean) {
@@ -39,16 +59,11 @@ class PreferenceManager(context: Context) {
     }
     
     fun saveLastResetDate(date: LocalDate) {
-        preferences.edit().putString(KEY_LAST_RESET_DATE, date.format(dateFormatter)).apply()
+        saveDateValue(KEY_LAST_RESET_DATE, date)
     }
     
     fun getLastResetDate(): LocalDate? {
-        val dateString = preferences.getString(KEY_LAST_RESET_DATE, null)
-        return if (dateString != null) {
-            LocalDate.parse(dateString, dateFormatter)
-        } else {
-            null
-        }
+        return getDateValue(KEY_LAST_RESET_DATE)
     }
     
     // ----- MÉTODOS PARA HORARIO -----
@@ -94,12 +109,7 @@ class PreferenceManager(context: Context) {
     }
     
     fun getTodoTaskDate(taskId: Int): LocalDate? {
-        val dateString = preferences.getString("${KEY_TODO_TASK_PREFIX}${taskId}_date", null)
-        return if (dateString != null) {
-            LocalDate.parse(dateString, dateFormatter)
-        } else {
-            null
-        }
+        return getDateValue("${KEY_TODO_TASK_PREFIX}${taskId}_date")
     }
     
     fun getTodoTaskCompletionState(taskId: Int): Boolean {

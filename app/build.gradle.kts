@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("com.airbnb.android:lottie:6.1.0") // Para animaciones
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 
     // Dependencias de Compose
     implementation("androidx.compose.ui:ui:1.5.4")

@@ -187,6 +187,17 @@ class ScheduleRepository(context: Context) {
             .sortedBy { it.startTime }
     }
     
+    // Obtener tareas para un día específico en una fecha específica (útil para ver días anteriores)
+    fun getTasksForDayAndDate(dayOfWeek: DayOfWeek, date: LocalDate): List<ScheduleTask> {
+        return defaultTasks
+            .filter { it.dayOfWeek == dayOfWeek }
+            .map { task ->
+                val isCompleted = preferenceManager.getScheduleTaskCompletionState(task.id, date)
+                task.copy(isCompleted = isCompleted)
+            }
+            .sortedBy { it.startTime }
+    }
+    
     // Cambiar el estado de completado de una tarea
     fun toggleTaskCompletion(taskId: Int, date: LocalDate): Boolean {
         val currentStatus = preferenceManager.getScheduleTaskCompletionState(taskId, date)
@@ -203,5 +214,30 @@ class ScheduleRepository(context: Context) {
     // Obtener una tarea por su ID
     fun getTaskById(taskId: Int): ScheduleTask? {
         return defaultTasks.find { it.id == taskId }
+    }
+    
+    // Mover las tareas completadas del día actual al día anterior
+    fun moveCompletedTasksToYesterday(yesterday: LocalDate) {
+        val today = LocalDate.now()
+        
+        // Para cada día de la semana
+        for (dayOfWeek in DayOfWeek.values()) {
+            val tasks = defaultTasks.filter { it.dayOfWeek == dayOfWeek }
+            
+            // Si hoy es ese día de la semana, guardar el estado para ayer y resetear hoy
+            if (today.dayOfWeek == dayOfWeek) {
+                for (task in tasks) {
+                    val isCompleted = preferenceManager.getScheduleTaskCompletionState(task.id, today)
+                    
+                    // Si estaba completada, guardar ese estado para ayer
+                    if (isCompleted) {
+                        preferenceManager.saveScheduleTaskCompletionState(task.id, yesterday, true)
+                    }
+                    
+                    // Resetear el estado para hoy
+                    preferenceManager.saveScheduleTaskCompletionState(task.id, today, false)
+                }
+            }
+        }
     }
 }

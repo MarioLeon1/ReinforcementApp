@@ -28,7 +28,7 @@ class DailyGoalsRepository(context: Context) {
             lastResetDate = it
         }
         
-        resetDailyGoals()
+        checkAndResetIfNeeded()
     }
     
     fun getAllGoals(): List<DailyGoal> {
@@ -60,24 +60,26 @@ class DailyGoalsRepository(context: Context) {
     fun getCompletedGoalsCount(): Int {
         return currentGoals.count { it.isCompleted }
     }
-    
+
     private fun checkAndResetIfNeeded() {
         val today = LocalDate.now()
-        if (today.isAfter(lastResetDate)) {
+        if (today.isAfter(lastResetDate) || currentGoals.isEmpty()) {
             resetDailyGoals()
         }
     }
+
     
-    private fun resetDailyGoals() {
-        // Crear nuevos objetivos basados en los predeterminados, pero recuperando 
-        // el estado de completado de SharedPreferences solo si es el mismo día
+    // Método público para resetear objetivos diarios
+    fun resetDailyGoals() {
+        // Crear nuevos objetivos basados en los predeterminados, todos sin completar
         currentGoals = defaultGoals.map { goal ->
-            val isCompleted = if (lastResetDate == LocalDate.now()) {
-                preferenceManager.getGoalCompletionState(goal.id)
-            } else {
-                false
-            }
-            goal.copy(isCompleted = isCompleted)
+            // Al resetear, siempre se ponen como no completados
+            val newGoal = goal.copy(isCompleted = false)
+            
+            // Guardar el nuevo estado en SharedPreferences
+            preferenceManager.saveGoalCompletionState(goal.id, false)
+            
+            newGoal
         }.toMutableList()
         
         lastResetDate = LocalDate.now()

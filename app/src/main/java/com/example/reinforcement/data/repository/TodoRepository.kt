@@ -158,4 +158,35 @@ class TodoRepository(context: Context) {
         }
         return false
     }
+    
+    // Actualizar la fecha de las tareas de hoy a ayer cuando ocurre un cambio de día
+    fun preserveTasksCompletionState(yesterday: LocalDate) {
+        val today = LocalDate.now()
+        
+        // Obtener todas las tareas de hoy
+        val todayTasks = allTasks.filter { it.date.isEqual(today) }
+        
+        // Para cada tarea de hoy, crear una copia para ayer y mantener su estado
+        for (task in todayTasks) {
+            // Si la tarea está completada, crear una copia para ayer con el mismo estado
+            if (task.isCompleted) {
+                // Crear una nueva tarea para ayer con el mismo título y estado
+                val yesterdayTask = TodoTask(
+                    id = idCounter.getAndIncrement(),
+                    title = task.title,
+                    date = yesterday,
+                    isCompleted = true,
+                    creationDate = task.creationDate
+                )
+                
+                // Guardar la tarea de ayer
+                allTasks.add(yesterdayTask)
+                saveTaskToPreferences(yesterdayTask)
+                
+                // Resetear el estado de la tarea de hoy
+                task.isCompleted = false
+                saveTaskToPreferences(task)
+            }
+        }
+    }
 }
