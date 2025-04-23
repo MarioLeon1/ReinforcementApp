@@ -10,14 +10,14 @@
 
     <!-- Daily Goals Section -->
     <string name="daily_goals_title">Objetivos diarios:</string>
-    <string name="physical_goal">Objetivo físico:</string>
+    <string name="physical_goal">Victoria física:</string>
     <string name="physical_goal_run">Salir a correr</string>
     <string name="physical_goal_gym">Ir al gimnasio</string>
-    <string name="mental_goal">Objetivo mental:</string>
+    <string name="mental_goal">Victoria mental:</string>
     <string name="mental_goal_read">Leer</string>
     <string name="mental_goal_write">Escribir</string>
     <string name="mental_goal_learn">Aprender algo nuevo</string>
-    <string name="discipline_goal">Disciplina:</string>
+    <string name="discipline_goal">Victoria académica:</string>
     <string name="discipline_goal_class">Ir a clase</string>
     <string name="discipline_goal_study">Estudiar</string>
     <string name="discipline_goal_company">Empresa</string>

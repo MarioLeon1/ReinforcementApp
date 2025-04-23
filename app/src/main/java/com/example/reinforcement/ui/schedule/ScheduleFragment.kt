@@ -36,7 +36,7 @@ class ScheduleFragment : Fragment() {
         // Utilizar la fábrica de ViewModels personalizada
         val factory = ViewModelFactory(requireActivity().application)
         viewModel = ViewModelProvider(this, factory)[ScheduleViewModel::class.java]
-        
+
         setupTabLayout()
         setupRecyclerView()
         observeViewModel()
@@ -61,7 +61,7 @@ class ScheduleFragment : Fragment() {
         adapter = ScheduleAdapter { taskId ->
             viewModel.toggleTaskCompletion(taskId)
         }
-        
+
         binding.recyclerSchedule.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@ScheduleFragment.adapter
@@ -72,28 +72,28 @@ class ScheduleFragment : Fragment() {
         // Observar cambios en las etiquetas de fecha
         viewModel.dateLabels.observe(viewLifecycleOwner) { labels ->
             binding.tabLayoutDays.removeAllTabs()
-            
+
             // Añadir una pestaña para cada día de la semana
             for (dayOfWeek in DayOfWeek.values()) {
                 val tab = binding.tabLayoutDays.newTab()
                     .setText(getDayName(dayOfWeek))
                     .setTag(dayOfWeek)
-                
+
                 binding.tabLayoutDays.addTab(tab)
-                
+
                 // Seleccionar la pestaña correspondiente al día actual
                 if (dayOfWeek == viewModel.selectedDay.value) {
                     tab.select()
                 }
             }
         }
-        
+
         // Observar cambios en el día seleccionado y las tareas
         viewModel.scheduleTasks.observe(viewLifecycleOwner) { tasks ->
             val scheduleItems = generateScheduleItems(tasks)
             adapter.submitList(scheduleItems, viewModel.currentTimeIndicator.value)
         }
-        
+
         // Observar cambios en el indicador de tiempo actual
         viewModel.currentTimeIndicator.observe(viewLifecycleOwner) { currentTime ->
             // Regenerar los items con el nuevo tiempo actual
@@ -103,45 +103,76 @@ class ScheduleFragment : Fragment() {
             }
         }
     }
-    
+
     private fun generateScheduleItems(tasks: List<com.example.reinforcement.data.model.ScheduleTask>): List<ScheduleItem> {
-        val items = mutableListOf<ScheduleItem>()
-        
-        // Generar horas vacías y tareas desde las 8:00 hasta las 00:00
-        var currentHour = LocalTime.of(8, 0)
-        val endHour = LocalTime.of(0, 0)
-        
-        while (!currentHour.equals(endHour)) {
-            // Buscar tareas que empiecen en esta hora
-            val tasksAtHour = tasks.filter { 
-                it.startTime.hour == currentHour.hour && it.startTime.minute == currentHour.minute 
+        val result = mutableListOf<ScheduleItem>()
+        val sortedTasks = tasks.sortedBy { it.startTime }
+
+        // Generamos solo horas vacías donde no hay tareas
+        // Primero, creamos un conjunto para marcar las franjas horarias cubiertas por tareas
+        val coveredTimeSlots = mutableSetOf<Int>()
+
+        // Encontrar la última hora para la que necesitamos mostrar datos
+        // (esto evita mostrar horas vacías después de la última tarea)
+        var latestEndTimeMinutes = 0
+        for (task in sortedTasks) {
+            val endMinutes = task.endTime.hour * 60 + task.endTime.minute
+            if (endMinutes > latestEndTimeMinutes) {
+                latestEndTimeMinutes = endMinutes
             }
-            
-            if (tasksAtHour.isEmpty()) {
-                // Si no hay tareas, agregar una hora vacía
-                items.add(ScheduleItem.EmptyHour(currentHour))
-            } else {
-                // Si hay tareas, agregar cada tarea
-                tasksAtHour.forEach { task ->
-                    items.add(
-                        ScheduleItem.TaskItem(
-                            id = task.id,
-                            title = task.title,
-                            startTime = task.startTime,
-                            endTime = task.endTime,
-                            isCompleted = task.isCompleted
-                        )
-                    )
-                }
-            }
-            
-            // Avanzar a la siguiente hora
-            currentHour = currentHour.plusHours(1)
         }
-        
-        return items
+
+        // Registramos todas las horas cubiertas por tareas (en minutos desde las 00:00)
+        for (task in sortedTasks) {
+            // Convertir startTime y endTime a minutos desde las 00:00
+            val startMinutes = task.startTime.hour * 60 + task.startTime.minute
+            val endMinutes = task.endTime.hour * 60 + task.endTime.minute
+
+            // Marcar todos los slots de 30 minutos cubiertos por esta tarea
+            var currentSlot = (startMinutes / 30) * 30 // Redondear al slot de 30 minutos
+            while (currentSlot < endMinutes) {
+                coveredTimeSlots.add(currentSlot)
+                currentSlot += 30
+            }
+        }
+
+        // Añadir horas vacías para las horas no cubiertas (entre 8:00 y la última hora)
+        // Calculamos el último slot que necesitamos mostrar
+        val lastSlotToShow = ((latestEndTimeMinutes + 29) / 30) * 30
+
+        // Comenzar desde las 8:00 (480 minutos)
+        var currentSlot = 8 * 60
+        while (currentSlot <= lastSlotToShow) {
+            if (currentSlot !in coveredTimeSlots) {
+                val hour = currentSlot / 60
+                val minute = currentSlot % 60
+                result.add(ScheduleItem.EmptyHour(LocalTime.of(hour, minute)))
+            }
+            currentSlot += 30
+        }
+
+        // Añadir todas las tareas
+        for (task in sortedTasks) {
+            result.add(
+                ScheduleItem.TaskItem(
+                    id = task.id,
+                    title = task.title,
+                    startTime = task.startTime,
+                    endTime = task.endTime,
+                    isCompleted = task.isCompleted
+                )
+            )
+        }
+
+        // Ordenar todo por hora
+        return result.sortedWith(compareBy {
+            when (it) {
+                is ScheduleItem.EmptyHour -> it.time
+                is ScheduleItem.TaskItem -> it.startTime
+            }
+        })
     }
-    
+
     private fun getDayName(dayOfWeek: DayOfWeek): String {
         return when (dayOfWeek) {
             DayOfWeek.MONDAY -> "Lunes"

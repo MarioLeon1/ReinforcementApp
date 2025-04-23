@@ -15,15 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="10:00" />
-
-    <View
-        android:id="@+id/indicator_current_time"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/yellow_indicator"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_task"
@@ -46,5 +39,15 @@
             tools:text="Clase: Redes y Sistemas" />
 
     </androidx.cardview.widget.CardView>
+
+    <!-- Mover la línea amarilla encima de la tarjeta para que sea visible -->
+    <View
+        android:id="@+id/indicator_current_time"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/yellow_indicator"
+        android:visibility="gone"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

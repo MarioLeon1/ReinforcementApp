@@ -12,11 +12,12 @@ class DailyGoalsRepository(context: Context) {
         DailyGoal(1, GoalCategory.PHYSICAL, "Salir a correr"),
         DailyGoal(2, GoalCategory.PHYSICAL, "Ir al gimnasio"),
         DailyGoal(3, GoalCategory.MENTAL, "Leer"),
-        DailyGoal(4, GoalCategory.MENTAL, "Escribir"),
-        DailyGoal(5, GoalCategory.MENTAL, "Aprender algo nuevo"),
+        DailyGoal(4, GoalCategory.MENTAL, "Hablar con tus padres"),
+        DailyGoal(5, GoalCategory.MENTAL, "Pasar tiempo con tus amigos/novia"),
         DailyGoal(6, GoalCategory.DISCIPLINE, "Ir a clase"),
         DailyGoal(7, GoalCategory.DISCIPLINE, "Estudiar"),
-        DailyGoal(8, GoalCategory.DISCIPLINE, "Empresa")
+        DailyGoal(8, GoalCategory.DISCIPLINE, "Empresa"),
+        DailyGoal(9, GoalCategory.PHYSICAL, "Meditar")
     )
     
     private var currentGoals = mutableListOf<DailyGoal>()
