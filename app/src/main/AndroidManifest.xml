@@ -16,26 +16,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reinforcement"
         tools:targetApi="31">
-        
+
+        <!-- Splash Activity (nueva actividad principal) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:theme="@style/Theme.Reinforcement.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name">
+        </activity>
+
         <!-- Receiver para el reseteo diario -->
-        <receiver 
+        <receiver
             android:name=".data.repository.DailyResetReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.example.reinforcement.DAILY_RESET" />
             </intent-filter>
         </receiver>
-        
+
         <!-- Receiver para el reinicio del dispositivo -->
         <receiver
             android:name=".data.repository.BootCompletedReceiver"
@@ -44,7 +52,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        
+
     </application>
 
 </manifest>
