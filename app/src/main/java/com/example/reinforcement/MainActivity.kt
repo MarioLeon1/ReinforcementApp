@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.reinforcement.databinding.ActivityMainBinding
 import com.example.reinforcement.ui.points.PointsFragment
@@ -21,10 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-        // Configurar los destinos de nivel superior (no muestran botón de retroceso)
+        // Configurar los destinos de nivel superior
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_daily_goals,
@@ -35,12 +33,11 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         // Escuchar cambios en el destino de navegación para actualizar datos
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // Siempre que navegamos a la sección de puntos, forzamos la recarga
+            // Si navegamos a la sección de puntos, forzar la recarga
             if (destination.id == R.id.navigation_points) {
                 refreshPointsFragment()
             }
