@@ -15,5 +15,5 @@ data class PointEntry(
 )
 
 enum class PointCategory {
-    DAILY_GOAL, SCHEDULE, TODO, CIGARETTES, BONUS
+    DAILY_GOAL, SCHEDULE, TODO, CIGARETTES, BONUS, PENALTY
 }

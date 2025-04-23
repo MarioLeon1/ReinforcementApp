@@ -16,20 +16,23 @@ class PointsRepository(
     private val todoRepository: TodoRepository,
     private val cigarettesRepository: CigarettesRepository
 ) {
-    
+
     private val pointsDataMap = mutableMapOf<LocalDate, PointsData>()
-    
+
     // Constantes para la asignación de puntos
     companion object {
         const val DAILY_GOAL_POINTS = 10
-        const val SCHEDULE_TASK_POINTS = 15
-        const val TODO_TASK_POINTS = 10
+        const val CATEGORY_COMBINATION_BONUS = 10
+        const val MISSING_CATEGORY_PENALTY = -10
+        const val ACADEMIC_GOAL_MISSED_PENALTY = -10
+
+        const val TODO_MAX_POINTS = 50
+
+        const val CIGARETTE_MAX_POINTS = 50
         const val CIGARETTE_LIMIT = 10
-        const val CIGARETTE_PENALTY = -10
-        const val ALL_CATEGORIES_BONUS = 10
-        const val PERFECT_SCHEDULE_BONUS = 50
+        const val CIGARETTE_PENALTY_PER_EXCESS = -10
     }
-    
+
     // Obtener o crear datos de puntos para una fecha
     private fun getOrCreatePointsData(date: LocalDate): PointsData {
         if (!pointsDataMap.containsKey(date)) {
@@ -37,88 +40,135 @@ class PointsRepository(
         }
         return pointsDataMap[date]!!
     }
-    
+
     // Calcular puntos para una fecha específica
     fun calculatePointsForDate(date: LocalDate): PointsData {
         val pointsData = getOrCreatePointsData(date)
-        
+
         // Limpiar entradas anteriores
         pointsData.pointsBreakdown.clear()
-        
+
         // 1. Puntos por objetivos diarios
-        val completedGoals = dailyGoalsRepository.getAllGoals().filter { it.isCompleted }
+        calculateDailyGoalsPoints(pointsData)
+
+        // 2. Puntos por tareas del To-Do (proporcional, máximo 50 puntos)
+        calculateTodoPoints(pointsData, date)
+
+        // 3. Puntos (o penalizaciones) por cigarros
+        calculateCigarettePoints(pointsData, date)
+
+        // Actualizar el total de puntos
+        pointsData.totalPoints = pointsData.pointsBreakdown.sumOf { it.points }
+
+        return pointsData
+    }
+
+    private fun calculateDailyGoalsPoints(pointsData: PointsData) {
+        val allGoals = dailyGoalsRepository.getAllGoals()
+        val completedGoals = allGoals.filter { it.isCompleted }
+
+        // Puntos por objetivos completados
         for (goal in completedGoals) {
             addPointEntry(pointsData, goal.title, DAILY_GOAL_POINTS, PointCategory.DAILY_GOAL)
         }
-        
-        // 2. Puntos por tareas del horario
-        val dayOfWeek = date.dayOfWeek
-        val completedScheduleTasks = scheduleRepository.getTasksForDay(dayOfWeek).filter { it.isCompleted }
-        for (task in completedScheduleTasks) {
-            addPointEntry(pointsData, task.title, SCHEDULE_TASK_POINTS, PointCategory.SCHEDULE)
-        }
-        
-        // 3. Puntos por tareas de To-Do
-        val completedTodoTasks = todoRepository.getTasksForDate(date).filter { it.isCompleted }
-        for (task in completedTodoTasks) {
-            addPointEntry(pointsData, task.title, TODO_TASK_POINTS, PointCategory.TODO)
-        }
-        
-        // 4. Puntos (o penalizaciones) por cigarros
-        val cigaretteData = cigarettesRepository.getCigaretteData(date)
-        if (cigaretteData.count > CIGARETTE_LIMIT) {
-            val excessCigarettes = cigaretteData.count - CIGARETTE_LIMIT
-            val penaltyPoints = excessCigarettes * CIGARETTE_PENALTY
-            addPointEntry(
-                pointsData,
-                "$excessCigarettes cigarros más de los permitidos",
-                penaltyPoints,
-                PointCategory.CIGARETTES
-            )
-        } else if (cigaretteData.count <= CIGARETTE_LIMIT) {
-            val savedCigarettes = CIGARETTE_LIMIT - cigaretteData.count
-            val bonusPoints = savedCigarettes * 5  // 5 puntos por cada cigarro menos del límite
-            if (bonusPoints > 0) {
-                addPointEntry(
-                    pointsData,
-                    "Has fumado menos del límite",
-                    bonusPoints,
-                    PointCategory.CIGARETTES
-                )
-            }
-        }
-        
-        // 5. Bonificación por cumplir objetivos en todas las categorías
+
+        // Comprobar si hay al menos un objetivo completado de cada categoría
         val hasPhysicalGoal = completedGoals.any { it.category == GoalCategory.PHYSICAL }
         val hasMentalGoal = completedGoals.any { it.category == GoalCategory.MENTAL }
         val hasDisciplineGoal = completedGoals.any { it.category == GoalCategory.DISCIPLINE }
-        
+
         if (hasPhysicalGoal && hasMentalGoal && hasDisciplineGoal) {
+            // Bonus por tener al menos un objetivo de cada categoría
             addPointEntry(
                 pointsData,
                 "Bonus: Objetivos de tres categorías distintas",
-                ALL_CATEGORIES_BONUS,
+                CATEGORY_COMBINATION_BONUS,
                 PointCategory.BONUS
             )
-        }
-        
-        // 6. Bonificación por horario perfecto
-        val allScheduleTasks = scheduleRepository.getTasksForDay(dayOfWeek)
-        if (allScheduleTasks.isNotEmpty() && allScheduleTasks.all { it.isCompleted }) {
+        } else {
+            // Penalización por no tener al menos un objetivo de cada categoría
             addPointEntry(
                 pointsData,
-                "Bonus: Horario cumplido a la perfección",
-                PERFECT_SCHEDULE_BONUS,
-                PointCategory.BONUS
+                "Penalización: Faltan objetivos de algunas categorías",
+                MISSING_CATEGORY_PENALTY,
+                PointCategory.PENALTY
+            )
+
+            // Penalización adicional por cada objetivo académico (disciplina) no completado
+            val uncompletedAcademicGoals = allGoals
+                .filter { it.category == GoalCategory.DISCIPLINE && !it.isCompleted }
+
+            if (uncompletedAcademicGoals.isNotEmpty()) {
+                for (goal in uncompletedAcademicGoals) {
+                    addPointEntry(
+                        pointsData,
+                        "Penalización: ${goal.title} no completado",
+                        ACADEMIC_GOAL_MISSED_PENALTY,
+                        PointCategory.PENALTY
+                    )
+                }
+            }
+        }
+    }
+
+    private fun calculateTodoPoints(pointsData: PointsData, date: LocalDate) {
+        val todoTasks = todoRepository.getTasksForDate(date)
+
+        if (todoTasks.isEmpty()) {
+            return  // No hay tareas, no hay puntos
+        }
+
+        val completedTasks = todoTasks.count { it.isCompleted }
+        val completionPercentage = completedTasks.toFloat() / todoTasks.size
+        val earnedPoints = (TODO_MAX_POINTS * completionPercentage).toInt()
+
+        if (earnedPoints > 0) {
+            addPointEntry(
+                pointsData,
+                "$completedTasks de ${todoTasks.size} tareas completadas",
+                earnedPoints,
+                PointCategory.TODO
             )
         }
-        
-        // Actualizar el total de puntos
-        pointsData.totalPoints = pointsData.pointsBreakdown.sumOf { it.points }
-        
-        return pointsData
     }
-    
+
+    private fun calculateCigarettePoints(pointsData: PointsData, date: LocalDate) {
+        val cigaretteData = cigarettesRepository.getCigaretteData(date)
+        val cigaretteCount = cigaretteData.count
+
+        if (cigaretteCount == 0) {
+            // No ha fumado ningún cigarro
+            addPointEntry(
+                pointsData,
+                "No has fumado ningún cigarro",
+                CIGARETTE_MAX_POINTS,
+                PointCategory.CIGARETTES
+            )
+        } else if (cigaretteCount <= CIGARETTE_LIMIT) {
+            // Ha fumado dentro del límite
+            val pointsLost = (cigaretteCount.toFloat() / CIGARETTE_LIMIT * CIGARETTE_MAX_POINTS).toInt()
+            val earnedPoints = CIGARETTE_MAX_POINTS - pointsLost
+
+            addPointEntry(
+                pointsData,
+                "$cigaretteCount cigarros fumados",
+                earnedPoints,
+                PointCategory.CIGARETTES
+            )
+        } else {
+            // Ha excedido el límite
+            val excessCigarettes = cigaretteCount - CIGARETTE_LIMIT
+            val penaltyPoints = excessCigarettes * CIGARETTE_PENALTY_PER_EXCESS
+
+            addPointEntry(
+                pointsData,
+                "$cigaretteCount cigarros fumados (exceso de $excessCigarettes)",
+                penaltyPoints,
+                PointCategory.CIGARETTES
+            )
+        }
+    }
+
     private fun addPointEntry(
         pointsData: PointsData,
         description: String,
@@ -133,17 +183,17 @@ class PointsRepository(
             )
         )
     }
-    
+
     // Obtener historial de puntos para un rango de fechas
     fun getPointsHistory(startDate: LocalDate, endDate: LocalDate): List<PointsData> {
         val result = mutableListOf<PointsData>()
         var currentDate = startDate
-        
+
         while (!currentDate.isAfter(endDate)) {
             result.add(calculatePointsForDate(currentDate))
             currentDate = currentDate.plusDays(1)
         }
-        
+
         return result
     }
 }

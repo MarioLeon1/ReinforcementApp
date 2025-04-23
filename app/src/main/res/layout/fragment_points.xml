@@ -57,14 +57,53 @@
 
     </LinearLayout>
 
+    <!-- Nuevo gráfico circular de progreso -->
+    <FrameLayout
+        android:id="@+id/frame_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_date_navigation">
+
+        <com.example.reinforcement.ui.custom.CircularProgressView
+            android:id="@+id/circular_progress"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:id="@+id/image_trophy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_trophy"
+            android:tint="@color/primary_text" />
+
+    </FrameLayout>
+
+    <!-- Mensaje de felicitación -->
+    <TextView
+        android:id="@+id/text_congratulations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="¡Felicidades!"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/frame_progress"
+        tools:visibility="visible" />
+
     <TextView
         android:id="@+id/text_points_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Desglose de puntos:"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/layout_date_navigation" />
+        app:layout_constraintTop_toBottomOf="@id/text_congratulations" />
 
     <ScrollView
         android:id="@+id/scroll_view_points"
@@ -90,20 +129,6 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_daily_goals_points"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
-            <TextView
-                android:id="@+id/text_schedule_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/category_schedule"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_schedule_points"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />
@@ -146,6 +171,20 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_bonus_points"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:id="@+id/text_penalty_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Penalizaciones"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_penalty_points"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />

@@ -67,5 +67,6 @@
     <string name="category_todo">To-Do</string>
     <string name="category_cigarettes">Cigarros</string>
     <string name="category_bonus">Bonus</string>
+    <string name="penalty_category">Penalizaciones</string>
 
 </resources>

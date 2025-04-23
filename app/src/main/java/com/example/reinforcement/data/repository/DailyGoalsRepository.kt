@@ -17,7 +17,8 @@ class DailyGoalsRepository(context: Context) {
         DailyGoal(6, GoalCategory.DISCIPLINE, "Ir a clase"),
         DailyGoal(7, GoalCategory.DISCIPLINE, "Estudiar"),
         DailyGoal(8, GoalCategory.DISCIPLINE, "Empresa"),
-        DailyGoal(9, GoalCategory.PHYSICAL, "Meditar")
+        DailyGoal(9, GoalCategory.PHYSICAL, "Meditar"),
+        DailyGoal(10, GoalCategory.DISCIPLINE, "Despertarse a la hora")
     )
     
     private var currentGoals = mutableListOf<DailyGoal>()
@@ -64,9 +65,27 @@ class DailyGoalsRepository(context: Context) {
 
     private fun checkAndResetIfNeeded() {
         val today = LocalDate.now()
-        if (today.isAfter(lastResetDate) || currentGoals.isEmpty()) {
-            resetDailyGoals()
+        // Volver a cargar la fecha desde las preferencias para asegurar que tenemos el valor más reciente
+        preferenceManager.getLastResetDate()?.let {
+            lastResetDate = it
         }
+
+        // Solo resetear si es un nuevo día y no si la lista está vacía
+        if (today.isAfter(lastResetDate)) {
+            resetDailyGoals()
+        } else if (currentGoals.isEmpty()) {
+            // Si los objetivos están vacíos pero no es un nuevo día, cargar desde preferencias
+            loadGoalsFromPreferences()
+        }
+    }
+
+    // Nuevo método para cargar objetivos desde preferencias
+    private fun loadGoalsFromPreferences() {
+        currentGoals = defaultGoals.map { goal ->
+            // Cargar el estado guardado desde SharedPreferences
+            val isCompleted = preferenceManager.getGoalCompletionState(goal.id)
+            goal.copy(isCompleted = isCompleted)
+        }.toMutableList()
     }
 
     

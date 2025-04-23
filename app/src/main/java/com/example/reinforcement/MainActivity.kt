@@ -40,12 +40,33 @@ class MainActivity : AppCompatActivity() {
 
         // Escuchar cambios en el destino de navegación para actualizar datos
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // Si navegamos a la sección de puntos, forzar la recarga
+            // Siempre que navegamos a la sección de puntos, forzamos la recarga
             if (destination.id == R.id.navigation_points) {
-                val pointsFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-                    ?.childFragmentManager?.fragments?.firstOrNull { it is PointsFragment } as? PointsFragment
+                refreshPointsFragment()
+            }
+        }
 
-                pointsFragment?.refreshData()
+        // También escuchar clics en el menú de navegación inferior
+        navView.setOnItemSelectedListener { menuItem ->
+            navController.navigate(menuItem.itemId)
+
+            // Si seleccionamos la pestaña de puntos, forzamos actualización
+            if (menuItem.itemId == R.id.navigation_points) {
+                // Dar tiempo a que se cargue el fragmento
+                binding.root.post {
+                    refreshPointsFragment()
+                }
+            }
+            true
+        }
+    }
+
+    private fun refreshPointsFragment() {
+        // Intentar encontrar y actualizar el fragmento de puntos
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+        navHostFragment?.childFragmentManager?.fragments?.forEach { fragment ->
+            if (fragment is PointsFragment) {
+                fragment.refreshData()
             }
         }
     }
