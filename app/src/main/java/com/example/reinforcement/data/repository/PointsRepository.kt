@@ -93,20 +93,21 @@ class PointsRepository(
                 MISSING_CATEGORY_PENALTY,
                 PointCategory.PENALTY
             )
+        }
 
-            // Penalización adicional por cada objetivo académico (disciplina) no completado
-            val uncompletedAcademicGoals = allGoals
-                .filter { it.category == GoalCategory.DISCIPLINE && !it.isCompleted }
+        // Penalización adicional por cada objetivo académico (disciplina) no completado
+        // Este bloque ahora está fuera del "else" para que siempre se ejecute
+        val uncompletedAcademicGoals = allGoals
+            .filter { it.category == GoalCategory.DISCIPLINE && !it.isCompleted }
 
-            if (uncompletedAcademicGoals.isNotEmpty()) {
-                for (goal in uncompletedAcademicGoals) {
-                    addPointEntry(
-                        pointsData,
-                        "Penalización: ${goal.title} no completado",
-                        ACADEMIC_GOAL_MISSED_PENALTY,
-                        PointCategory.PENALTY
-                    )
-                }
+        if (uncompletedAcademicGoals.isNotEmpty()) {
+            for (goal in uncompletedAcademicGoals) {
+                addPointEntry(
+                    pointsData,
+                    "Penalización: ${goal.title} no completado",
+                    ACADEMIC_GOAL_MISSED_PENALTY,
+                    PointCategory.PENALTY
+                )
             }
         }
     }

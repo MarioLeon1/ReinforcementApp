@@ -12,6 +12,7 @@ import com.example.reinforcement.R
 import com.example.reinforcement.data.model.PointCategory
 import com.example.reinforcement.databinding.FragmentPointsBinding
 import com.example.reinforcement.ui.ViewModelFactory
+import com.example.reinforcement.ui.custom.CircularProgressView  // Añade esta importación
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -137,18 +138,33 @@ class PointsFragment : Fragment() {
         }
 
         // Observar si se ha alcanzado el objetivo
+// Observar si se ha alcanzado el objetivo
         viewModel.goalReached.observe(viewLifecycleOwner) { goalReached ->
             if (goalReached) {
                 binding.textCongratulations.visibility = View.VISIBLE
+
+                // Actualizar color del icono del trofeo
                 binding.imageTrophy.setColorFilter(
                     ContextCompat.getColor(requireContext(), R.color.green_success),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
+
+                // Actualizar color de la barra de progreso
+                (binding.circularProgress as CircularProgressView).setProgressColor(
+                    ContextCompat.getColor(requireContext(), R.color.green_success)
+                )
             } else {
                 binding.textCongratulations.visibility = View.GONE
+
+                // Reestablecer color del icono del trofeo
                 binding.imageTrophy.setColorFilter(
                     ContextCompat.getColor(requireContext(), R.color.primary_text),
                     android.graphics.PorterDuff.Mode.SRC_IN
+                )
+
+                // Reestablecer color de la barra de progreso
+                (binding.circularProgress as CircularProgressView).setProgressColor(
+                    ContextCompat.getColor(requireContext(), R.color.primary)
                 )
             }
         }

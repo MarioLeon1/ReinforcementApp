@@ -36,6 +36,12 @@ class CircularProgressView @JvmOverloads constructor(
         invalidate()
     }
 
+    // Nuevo método para cambiar el color de la barra de progreso
+    fun setProgressColor(color: Int) {
+        progressPaint.color = color
+        invalidate()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 

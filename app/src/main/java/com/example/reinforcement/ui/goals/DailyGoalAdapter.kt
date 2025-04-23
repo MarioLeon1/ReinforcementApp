@@ -1,8 +1,10 @@
 package com.example.reinforcement.ui.goals
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reinforcement.R
 import com.example.reinforcement.data.model.DailyGoal
@@ -50,9 +52,44 @@ class DailyGoalAdapter(
                     // Animar el cambio de estado
                     val bounceAnimation = AnimationUtils.loadAnimation(binding.root.context, R.anim.bounce_animation)
                     binding.textGoalBullet.startAnimation(bounceAnimation)
+
+                    // Mostrar animación de puntos
+                    showPointsAnimation(binding.root)
                 }
                 onGoalClicked(goal)
             }
+        }
+
+        private fun showPointsAnimation(rootView: View) {
+            // Inflar la vista de animación
+            val inflater = LayoutInflater.from(rootView.context)
+            val pointsAnimView = inflater.inflate(R.layout.points_animation_view, null) as TextView
+
+            // Configurar la posición de la vista de animación
+            val rootLayout = rootView.rootView as ViewGroup
+            val layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            rootLayout.addView(pointsAnimView, layoutParams)
+
+            // Posicionar la vista de animación junto al objetivo
+            val location = IntArray(2)
+            binding.textGoalTitle.getLocationInWindow(location)
+
+            // Posicionamos la animación justo a la derecha del texto del objetivo con un pequeño margen
+            pointsAnimView.x = location[0].toFloat() + binding.textGoalTitle.width / 2
+            pointsAnimView.y = location[1].toFloat()
+
+            // Iniciar la animación
+            val animation = AnimationUtils.loadAnimation(rootView.context, R.anim.points_animation)
+            pointsAnimView.alpha = 1f
+            pointsAnimView.startAnimation(animation)
+
+            // Eliminar la vista después de que termine la animación
+            rootView.postDelayed({
+                rootLayout.removeView(pointsAnimView)
+            }, 1100) // Un poco más que la duración total de la animación
         }
     }
 }
